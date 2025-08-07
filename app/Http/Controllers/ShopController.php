@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Resources\CollectionResource;
+use App\Http\Resources\ProductResource;
 use Inertia\Inertia;
 use Lunar\Models\Collection;
 use Lunar\Models\Product;
@@ -11,15 +12,12 @@ class ShopController extends Controller
 {
     public function home()
     {
-        $collections = Collection::all(['id', 'name', 'slug']);
-        $products = Product::with('defaultImage')
-            ->latest()
-            ->limit(6)
-            ->get(['id', 'name', 'slug', 'thumbnail', 'base_price']);
+        $collections = Collection::all();
+        $products = Product::all();
 
         return Inertia::render('home', [
-            'collections' => $collections,
-            'products' => $products,
+            'collections' => CollectionResource::collection($collections),
+            'products' => ProductResource::collection($products),
         ]);
     }
 }
